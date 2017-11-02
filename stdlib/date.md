@@ -365,9 +365,9 @@ d.toLocaleDateString()
 // 英文版浏览器为"1/1/2013"
 ```
 
-**（8）Date.prototype.toLocalTimeString()**
+**（8）Date.prototype.toLocaleTimeString()**
 
-`toLocalTimeString`方法返回一个字符串，代表时间的当地写法。
+`toLocaleTimeString`方法返回一个字符串，代表时间的当地写法。
 
 ```javascript
 var d = new Date(2013, 0, 1);
@@ -412,7 +412,7 @@ d.getFullYear() // 2013
 d.getTimezoneOffset() // -480
 ```
 
-上面代码中，最后一行返回`-480`，表示UTC比当前时间晚480分钟，即8个小时。
+上面代码中，最后一行返回`-480`，即 UTC 时间减去当前时间，单位是分钟。`-480`表示 UTC 比当前时间少480分钟，即当前时区比 UTC 早8个小时。
 
 下面是一个例子，计算本年度还剩下多少天。
 

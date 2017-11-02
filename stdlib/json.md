@@ -6,15 +6,15 @@ date: 2013-01-11
 modifiedOn: 2013-10-01
 ---
 
-## JSON格式
+## JSON 格式
 
-JSON格式（JavaScript Object Notation的缩写）是一种用于数据交换的文本格式，2001年由Douglas Crockford提出，目的是取代繁琐笨重的XML格式。
+JSON 格式（JavaScript Object Notation 的缩写）是一种用于数据交换的文本格式，2001年由 Douglas Crockford 提出，目的是取代繁琐笨重的 XML 格式。
 
-相比XML格式，JSON格式有两个显著的优点：书写简单，一目了然；符合JavaScript原生语法，可以由解释引擎直接处理，不用另外添加解析代码。所以，JSON迅速被接受，已经成为各大网站交换数据的标准格式，并被写入ECMAScript 5，成为标准的一部分。
+相比 XML 格式，JSON 格式有两个显著的优点：书写简单，一目了然；符合 JavaScript 原生语法，可以由解释引擎直接处理，不用另外添加解析代码。所以，JSON迅速被接受，已经成为各大网站交换数据的标准格式，并被写入ECMAScript 5，成为标准的一部分。
 
-简单说，每个JSON对象，就是一个值。要么是简单类型的值，要么是复合类型的值，但是只能是一个值，不能是两个或更多的值。这就是说，每个JSON文档只能包含一个值。
+简单说，每个 JSON 对象，就是一个值。要么是简单类型的值，要么是复合类型的值，但是只能是一个值，不能是两个或更多的值。这就是说，每个 JSON 文档只能包含一个值。
 
-JSON对值的类型和格式有严格的规定。
+JSON 对值的类型和格式有严格的规定。
 
 > 1. 复合类型的值只能是数组或对象，不能是函数、正则表达式对象、日期对象。
 >
@@ -26,7 +26,7 @@ JSON对值的类型和格式有严格的规定。
 >
 > 1. 数组或对象最后一个成员的后面，不能加逗号。
 
-以下是合格的JSON值。
+以下是合格的 JSON 值。
 
 ```javascript
 ["one", "two", "three"]
@@ -38,7 +38,7 @@ JSON对值的类型和格式有严格的规定。
 [ { "name": "张三"}, {"name": "李四"} ]
 ```
 
-以下是不合格的JSON值。
+以下是不合格的 JSON 值。
 
 ```javascript
 { name: "张三", 'age': 32 }  // 属性名必须使用双引号
@@ -55,15 +55,15 @@ JSON对值的类型和格式有严格的规定。
 } // 不能使用函数和日期对象
 ```
 
-需要注意的是，空数组和空对象都是合格的JSON值，`null`本身也是一个合格的JSON值。
+需要注意的是，空数组和空对象都是合格的 JSON 值，`null`本身也是一个合格的 JSON 值。
 
-ES5新增了`JSON`对象，用来处理JSON格式数据。它有两个方法：`JSON.stringify()`和`JSON.parse()`。
+ES5 新增了`JSON`对象，用来处理 JSON 格式数据。它有两个方法：`JSON.stringify()`和`JSON.parse()`。
 
 ## JSON.stringify()
 
 ### 基本用法
 
-`JSON.stringify`方法用于将一个值转为字符串。该字符串应该符合JSON格式，并且可以被`JSON.parse`方法还原。
+`JSON.stringify`方法用于将一个值转为字符串。该字符串符合 JSON 格式，并且可以被`JSON.parse`方法还原。
 
 ```javascript
 JSON.stringify('abc') // ""abc""
@@ -79,19 +79,38 @@ JSON.stringify({ name: "张三" })
 // '{"name":"张三"}'
 ```
 
-上面代码将各种类型的值，转成JSON字符串。需要注意的是，对于原始类型的字符串，转换结果会带双引号，即字符串`abc`会被转成`"abc"`，这是因为将来还原的时候，双引号可以让JavaScript引擎知道，`abc`是一个字符串，而不是一个变量名。
+上面代码将各种类型的值，转成 JSON 字符串。
 
-如果原始对象中，有一个成员的值是`undefined`、函数或XML对象，这个成员会被省略。如果数组的成员是`undefined`、函数或XML对象，则这些值被转成`null`。
+需要注意的是，对于原始类型的字符串，转换结果会带双引号。
 
 ```javascript
-JSON.stringify({
-  f: function(){},
-  a: [ function(){}, undefined ]
-});
-// "{"a": [null,null]}"
+JSON.stringify('foo') === "foo" // false
+JSON.stringify('foo') === "\"foo\"" // true
 ```
 
-上面代码中，原始对象的`f`属性是一个函数，`JSON.stringify`方法返回的字符串会将这个属性省略。而`a`属性是一个数组，成员分别为函数和undefined，它们都被转成了`null`。
+上面代码中，字符串`foo`，被转成了`""foo""`。这是因为将来还原的时候，双引号可以让 JavaScript 引擎知道，`foo`是一个字符串，而不是一个变量名。
+
+如果原始对象中，有一个成员的值是`undefined`、函数或 XML 对象，这个成员会被过滤。
+
+```javascript
+var obj = {
+  a: undefined,
+  b: function () {}
+};
+
+JSON.stringify(obj) // "{}"
+```
+
+上面代码中，对象`obj`的`a`属性是`undefined`，而`b`属性是一个函数，结果都被`JSON.stringify`过滤。
+
+如果数组的成员是`undefined`、函数或 XML 对象，则这些值被转成`null`。
+
+```javascript
+var arr = [undefined, function () {}];
+JSON.stringify(arr) // "[null,null]"
+```
+
+上面代码中，数组`arr`的成员是`undefined`和函数，它们都被转成了`null`。
 
 正则对象会被转成空对象。
 
@@ -114,7 +133,7 @@ Object.defineProperties(obj, {
   }
 });
 
-JSON.stringify(obj); // {"foo":1}
+JSON.stringify(obj); // "{"foo":1}"
 ```
 
 上面代码中，`bar`是`obj`对象的不可遍历属性，`JSON.stringify`方法会忽略这个属性。
@@ -243,7 +262,9 @@ JSON.stringify({ p1:1, p2:2 }, null, '|-');
 
 ### toJSON 方法
 
-如果`JSON.stringify`的参数对象有自定义的`toJSON`方法，那么`JSON.stringify`会使用这个方法的返回值作为参数，而忽略原对象的其他属性。
+如果对象有自定义的`toJSON`方法，那么`JSON.stringify`会使用这个方法的返回值作为参数，而忽略原对象的其他属性。
+
+下面是一个普通的对象。
 
 ```javascript
 var user = {
@@ -256,10 +277,8 @@ var user = {
 };
 
 JSON.stringify(user)
-// "{"firstName":"三","lastName":"张","fullName":"三张"}"
+// "{"firstName":"三","lastName":"张","fullName":"张三"}"
 ```
-
-上面代码是`JSON.stringify`方法处理一个正常的对象。
 
 现在，为这个对象加上`toJSON`方法。
 
@@ -295,7 +314,7 @@ date.toJSON() // "2015-01-01T00:00:00.000Z"
 JSON.stringify(date) // ""2015-01-01T00:00:00.000Z""
 ```
 
-上面代码中，`JSON.stringify`一旦发现处理的是`data`对象实例，就会自动调用这个实例对象的`toJSON`方法，将该方法的返回值作为参数。
+上面代码中，`JSON.stringify`发现处理的是`Date`对象实例，就会调用这个实例对象的`toJSON`方法，将该方法的返回值作为参数。
 
 `toJSON`方法的一个应用是，将正则对象自动转为字符串。因为`JSON.stringify`默认不能转换正则对象，但是设置了`toJSON`方法以后，就可以转换正则对象了。
 

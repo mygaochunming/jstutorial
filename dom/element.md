@@ -27,16 +27,16 @@ modifiedOn: 2015-04-15
 ```javascript
 // HTML代码为
 // <span id="myspan">Hello</span>
-var span = document.getElementById('span');
+var span = document.getElementById('myspan');
 span.id // "myspan"
 span.tagName // "SPAN"
 ```
 
 ### Element.innerHTML
 
-`Element.innerHTML`属性返回该元素包含的HTML代码。该属性可读写，常用来设置某个节点的内容。
+`Element.innerHTML`属性返回该元素包含的 HTML 代码。该属性可读写，常用来设置某个节点的内容。
 
-如果将该属性设为空，等于删除所有它包含的所有节点。
+如果将`innerHTML`属性设为空，等于删除所有它包含的所有节点。
 
 ```javascript
 el.innerHTML = '';
@@ -52,7 +52,7 @@ document.getElementById('para').innerHTML
 // 5 &gt; 3
 ```
 
-由于上面这个原因，导致用`innerHTML`插入`<script>`标签，不会被执行。
+如果插入的文本包含 HTML 标签，会被解析成为节点对象插入 DOM。注意，如果文本之中含有`<script>`标签，虽然可以生成`script`节点，但是插入的代码不会执行。
 
 ```javascript
 var name = "<script>alert('haha')</script>";
@@ -239,11 +239,11 @@ function checking(){
 
 `Element.scrollLeft`属性表示网页元素的水平滚动条向右侧滚动的像素数量，`Element.scrollTop`属性表示网页元素的垂直滚动条向下滚动的像素数量。对于那些没有滚动条的网页元素，这两个属性总是等于0。
 
-如果要查看整张网页的水平的和垂直的滚动距离，要从`document.body`元素上读取。
+如果要查看整张网页的水平的和垂直的滚动距离，要从`document.documentElement`元素上读取。
 
 ```javascript
-document.body.scrollLeft
-document.body.scrollTop
+document.documentElement.scrollLeft
+document.documentElement.scrollTop
 ```
 
 这两个属性都可读写，设置该属性的值，会导致浏览器将指定元素自动滚动到相应的位置。
@@ -409,9 +409,33 @@ el.nextElementSibling
 
 ### Element.offsetParent
 
-`Element.offsetParent`属性返回当前HTML元素的最靠近的、并且CSS的`position`属性不等于`static`的父元素。如果某个元素的所有上层节点都将`position`属性设为`static`，则`Element.offsetParent`属性指向`<body>`元素。
+`Element.offsetParent`属性返回当前 HTML 元素的最靠近的、并且 CSS 的`position`属性不等于`static`的上层元素。
 
-该属性主要用于确定子元素的位置偏移，是`Element.offsetTop`和`Element.offsetLeft`的计算基准。
+```html
+<div style="position: absolute;">
+  <p>
+    <span>Hello</span>
+  </p>
+</div>
+```
+
+上面代码中，`span`元素的`offsetParent`属性就是`div`元素。
+
+该属性主要用于确定子元素位置偏移的计算基准，`Element.offsetTop`和`Element.offsetLeft`就是`offsetParent`元素计算的。
+
+如果该元素是不可见的（`display`属性为`none`），或者位置是固定的（`position`属性为`fixed`），则`offsetParent`属性返回`null`。
+
+```html
+<div style="position: absolute;">
+  <p>
+    <span style="display: none;">Hello</span>
+  </p>
+</div>
+```
+
+上面代码中，`span`元素的`offsetParent`属性是`null`。
+
+如果某个元素的所有上层节点的`position`属性都是`static`，则`Element.offsetParent`属性指向`<body>`元素。
 
 ## 属性相关的方法
 
@@ -660,7 +684,7 @@ element.insertAdjacentHTML(position, text);
 - `beforebegin`：在当前元素节点的前面。
 - `afterbegin`：在当前元素节点的里面，插在它的第一个子元素之前。
 - `beforeend`：在当前元素节点的里面，插在它的最后一个子元素之后。
-- `afterend`：在当前元素节点的后面。'
+- `afterend`：在当前元素节点的后面。
 
 ```javascript
 // 原来的HTML代码：<div id="one">one</div>
